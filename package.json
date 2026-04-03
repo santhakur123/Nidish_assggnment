@@ -1,0 +1,8 @@
+{
+  "name": "nidish-assignment",
+  "version": "1.0.0",
+  "description": "Full-stack content preview app — Nidish LLC Assignment",
+  "dependencies": {
+    "node-fetch": "^2.7.0"
+  }
+}
