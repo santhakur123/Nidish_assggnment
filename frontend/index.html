@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Content Preview Builder — Nidish LLC</title>
+  <meta name="description" content="A content management tool to compose and preview rich content blocks with live dynamic updates." />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Quill Rich Text Editor -->
+  <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet" />
+
+  <!-- App Styles -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ── Header ──────────────────────────────────────────────────────────── -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-icon">✦</span>
+        <span class="logo-text">ContentCraft</span>
+      </div>
+      <p class="header-sub">Build &amp; preview rich content blocks in real time</p>
+    </div>
+  </header>
+
+  <!-- ── Main Two-Column Layout ──────────────────────────────────────────── -->
+  <main class="main-layout" id="main-layout">
+
+    <!-- ── LEFT: Form Column ──────────────────────────────────────────────── -->
+    <section class="panel form-panel" aria-label="Content Form">
+      <div class="panel-header">
+        <h2 class="panel-title">
+          <span class="panel-icon">⚙</span> Configure Content
+        </h2>
+        <p class="panel-desc">Fill in the fields below and hit Submit to preview your content.</p>
+      </div>
+
+      <form id="content-form" novalidate>
+
+        <!-- Heading -->
+        <div class="field-group" id="group-heading">
+          <label class="field-label" for="input-heading">
+            Heading <span class="required-star">*</span>
+          </label>
+          <input
+            type="text"
+            id="input-heading"
+            name="heading"
+            class="field-input"
+            placeholder="Enter a compelling headline…"
+            autocomplete="off"
+          />
+          <span class="field-error" id="error-heading" role="alert"></span>
+        </div>
+
+        <!-- Paragraph (Quill rich-text) -->
+        <div class="field-group" id="group-paragraph">
+          <label class="field-label" for="quill-editor">
+            Paragraph <span class="required-star">*</span>
+          </label>
+          <div id="quill-editor" class="quill-container"></div>
+          <!-- Hidden textarea keeps Quill HTML for form submission -->
+          <input type="hidden" id="input-paragraph" name="paragraph" />
+          <span class="field-error" id="error-paragraph" role="alert"></span>
+        </div>
+
+        <!-- Background Image URL -->
+        <div class="field-group" id="group-backgroundImage">
+          <label class="field-label" for="input-backgroundImage">
+            Background Image URL <span class="required-star">*</span>
+          </label>
+          <input
+            type="url"
+            id="input-backgroundImage"
+            name="backgroundImage"
+            class="field-input"
+            placeholder="https://example.com/image.jpg"
+            autocomplete="off"
+          />
+          <span class="field-error" id="error-backgroundImage" role="alert"></span>
+        </div>
+
+        <!-- Text Color -->
+        <div class="field-group" id="group-textColor">
+          <label class="field-label" for="input-textColor">
+            Text Color <span class="required-star">*</span>
+            <span class="hint">(HEX code)</span>
+          </label>
+          <div class="color-input-row">
+            <span class="color-swatch" id="color-swatch"></span>
+            <input
+              type="text"
+              id="input-textColor"
+              name="textColor"
+              class="field-input"
+              placeholder="#FFFFFF"
+              maxlength="7"
+              autocomplete="off"
+            />
+          </div>
+          <span class="field-error" id="error-textColor" role="alert"></span>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" id="submit-btn" class="submit-btn">
+          <span class="btn-text">Submit &amp; Preview</span>
+          <span class="btn-spinner" aria-hidden="true"></span>
+        </button>
+
+        <!-- Global form success banner -->
+        <div class="form-success" id="form-success" role="status" aria-live="polite"></div>
+
+      </form>
+    </section>
+
+    <!-- ── RIGHT: Preview Column ───────────────────────────────────────────── -->
+    <section class="panel preview-panel" aria-label="Content Preview">
+      <div class="panel-header">
+        <h2 class="panel-title">
+          <span class="panel-icon">👁</span> Live Preview
+        </h2>
+        <p class="panel-desc">This updates when you submit valid content.</p>
+      </div>
+
+      <!-- Preview Card -->
+      <div class="preview-card" id="preview-card">
+        <div class="preview-card-inner" id="preview-card-inner">
+          <div class="preview-badge">Default Content</div>
+          <h3 class="preview-heading" id="preview-heading">
+            Welcome to ContentCraft
+          </h3>
+          <div class="preview-paragraph" id="preview-paragraph">
+            <p>
+              This is the <strong>default preview</strong> block. Fill in the form
+              on the left and submit to see your content replace this placeholder.
+              You can use <em>rich text</em> formatting in your paragraph!
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preview meta info -->
+      <div class="preview-meta" id="preview-meta">
+        <div class="meta-item">
+          <span class="meta-label">Status</span>
+          <span class="meta-value" id="meta-status">Awaiting submission</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Text Color</span>
+          <span class="meta-value" id="meta-color">—</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Image URL</span>
+          <span class="meta-value meta-url" id="meta-url">—</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Quill JS -->
+  <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+  <!-- App JS -->
+  <script src="app.js"></script>
+</body>
+</html>
